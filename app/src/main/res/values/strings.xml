@@ -15,4 +15,6 @@
     <string name="hello_story_fragment">Hello story fragment</string>
     <string name="login">Login</string>
     <string name="name">Name</string>
+    <string name="two_days_ago">2 days ago</string>
+    <string name="username">fakhrylinux</string>
 </resources>
