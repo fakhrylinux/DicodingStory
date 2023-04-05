@@ -66,6 +66,11 @@ class LoginFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        loginViewModel.getToken().observe(viewLifecycleOwner) { token ->
+            if (token != null) {
+                view?.findNavController()?.navigate(R.id.action_loginFragment_to_storyFragment)
+            }
+        }
         loginViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding?.progressBar?.isVisible = isLoading
         }
