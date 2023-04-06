@@ -22,6 +22,15 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
 
     private val token: Flow<String> = pref.getToken()
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _isError = MutableLiveData<Boolean>()
+    val isError: LiveData<Boolean> = _isError
+
+    private val _respondMessage = MutableLiveData<String>()
+    val respondMessage: LiveData<String> = _respondMessage
+
     init {
         viewModelScope.launch {
             token.collect { value ->
@@ -37,14 +46,21 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
                 call: Call<GetAllStoriesResponse>,
                 response: Response<GetAllStoriesResponse>
             ) {
+                _isLoading.value = false
                 if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        _listStories.value = response.body()!!.listStory
+                    val responseBody = response.body()
+                    if ((responseBody != null) && responseBody.listStory.isEmpty()) {
+                        _isError.value = true
+                        _respondMessage.value = "No Story Found"
                     }
+                    _listStories.value = responseBody?.listStory
                 }
             }
 
             override fun onFailure(call: Call<GetAllStoriesResponse>, t: Throwable) {
+                _isLoading.value = false
+                _isError.value = true
+                _respondMessage.value = "${t.message}"
                 Log.d(TAG, "onFailure: ${t.message}")
             }
         })

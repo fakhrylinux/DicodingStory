@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -51,6 +52,15 @@ class StoryFragment : Fragment() {
     private fun observeViewModel() {
         storyViewModel.listStories.observe(viewLifecycleOwner) { listStories ->
             storyListAdapter.setData(listStories)
+        }
+        storyViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding?.progressBar?.isVisible = isLoading
+        }
+        storyViewModel.isError.observe(viewLifecycleOwner) { isError ->
+            binding?.tvErrorMessage?.isVisible = isError
+        }
+        storyViewModel.respondMessage.observe(viewLifecycleOwner) { message ->
+            binding?.tvErrorMessage?.text = message
         }
     }
 
