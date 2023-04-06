@@ -67,7 +67,7 @@ class LoginFragment : Fragment() {
 
     private fun observeViewModel() {
         loginViewModel.getToken().observe(viewLifecycleOwner) { token ->
-            if (token != null) {
+            if (token.isNotEmpty()) {
                 view?.findNavController()?.navigate(R.id.action_loginFragment_to_storyFragment)
             }
         }

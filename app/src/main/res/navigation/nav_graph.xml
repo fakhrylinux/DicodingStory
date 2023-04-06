@@ -26,7 +26,7 @@
         tools:layout="@layout/fragment_register" />
     <fragment
         android:id="@+id/storyFragment"
-        android:name="me.fakhry.dicodingstory.StoryFragment"
+        android:name="me.fakhry.dicodingstory.ui.story.StoryFragment"
         android:label="fragment_story"
         tools:layout="@layout/fragment_story" />
 </navigation>
