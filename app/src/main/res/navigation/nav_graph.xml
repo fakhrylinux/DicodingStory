@@ -28,5 +28,12 @@
         android:id="@+id/storyFragment"
         android:name="me.fakhry.dicodingstory.ui.story.StoryFragment"
         android:label="fragment_story"
-        tools:layout="@layout/fragment_story" />
+
+        tools:layout="@layout/fragment_story">
+        <action
+            android:id="@+id/action_storyFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/storyFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

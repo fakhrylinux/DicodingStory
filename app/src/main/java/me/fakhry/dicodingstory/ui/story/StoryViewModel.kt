@@ -66,6 +66,10 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
         })
     }
 
+    suspend fun clearToken() {
+        pref.clearToken()
+    }
+
     companion object {
         private const val TAG = "StoryViewModel"
     }

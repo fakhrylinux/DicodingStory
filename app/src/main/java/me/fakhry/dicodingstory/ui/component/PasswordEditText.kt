@@ -41,7 +41,6 @@ class PasswordEditText : AppCompatEditText, View.OnTouchListener {
 
     private fun init() {
         inputType = EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
-        hint = "Password"
         transformationMethod = PasswordTransformationMethod()
         clearButtonImage =
             ContextCompat.getDrawable(context, R.drawable.ic_close_black_24) as Drawable
