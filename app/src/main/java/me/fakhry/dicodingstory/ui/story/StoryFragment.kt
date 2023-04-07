@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentStoryBinding
+import me.fakhry.dicodingstory.ui.UserSharedViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
@@ -27,7 +28,7 @@ class StoryFragment : Fragment() {
     private val binding get() = _binding
     private val storyListAdapter = StoryAdapter(arrayListOf())
     private lateinit var pref: UserPreferences
-    private lateinit var storyViewModel: StoryViewModel
+    private lateinit var userSharedViewModel: UserSharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,8 +42,8 @@ class StoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         pref = UserPreferences.getInstance(requireContext().dataStore)
-        storyViewModel =
-            ViewModelProvider(this, StoryViewModelFactory(pref))[StoryViewModel::class.java]
+        userSharedViewModel =
+            ViewModelProvider(this, StoryViewModelFactory(pref))[UserSharedViewModel::class.java]
 
         isLoggedIn()
         setupMenu()
@@ -56,9 +57,9 @@ class StoryFragment : Fragment() {
     }
 
     private fun isLoggedIn() {
-        storyViewModel.getToken().observe(viewLifecycleOwner) { token ->
+        userSharedViewModel.getToken().observe(viewLifecycleOwner) { token ->
             if (token.isNotEmpty()) {
-                storyViewModel.getAllStories(token)
+                userSharedViewModel.getAllStories(token)
             } else {
                 findNavController().navigate(R.id.loginFragment)
             }
@@ -74,7 +75,7 @@ class StoryFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.logout -> {
-                        storyViewModel.logout()
+                        userSharedViewModel.logout()
                         findNavController().navigate(R.id.loginFragment)
                     }
                 }
@@ -84,16 +85,16 @@ class StoryFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        storyViewModel.listStories.observe(viewLifecycleOwner) { listStories ->
+        userSharedViewModel.listStories.observe(viewLifecycleOwner) { listStories ->
             storyListAdapter.setData(listStories)
         }
-        storyViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding?.progressBar?.isVisible = isLoading
         }
-        storyViewModel.isError.observe(viewLifecycleOwner) { isError ->
+        userSharedViewModel.isError.observe(viewLifecycleOwner) { isError ->
             binding?.tvErrorMessage?.isVisible = isError
         }
-        storyViewModel.respondMessage.observe(viewLifecycleOwner) { message ->
+        userSharedViewModel.respondMessage.observe(viewLifecycleOwner) { message ->
             binding?.tvErrorMessage?.text = message
         }
     }

@@ -1,4 +1,4 @@
-package me.fakhry.dicodingstory.ui.story
+package me.fakhry.dicodingstory.ui
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
+class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
 
     private val _isLoggedIn = MutableLiveData<Boolean>()
     val isLoggedIn: LiveData<Boolean> = _isLoggedIn

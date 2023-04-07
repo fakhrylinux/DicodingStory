@@ -18,7 +18,7 @@ import androidx.navigation.fragment.findNavController
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentLoginBinding
-import me.fakhry.dicodingstory.ui.story.StoryViewModel
+import me.fakhry.dicodingstory.ui.UserSharedViewModel
 import me.fakhry.dicodingstory.ui.story.StoryViewModelFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
@@ -28,7 +28,7 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding
     private lateinit var pref: UserPreferences
-    private val storyViewModel: StoryViewModel by activityViewModels { StoryViewModelFactory(pref) }
+    private val userSharedViewModel: UserSharedViewModel by activityViewModels { StoryViewModelFactory(pref) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,19 +68,19 @@ class LoginFragment : Fragment() {
     }
 
     private fun login(email: String, password: String) {
-        storyViewModel.loginRequest(email, password)
+        userSharedViewModel.loginRequest(email, password)
     }
 
     private fun observeViewModel() {
-        storyViewModel.getToken().observe(viewLifecycleOwner) { token ->
+        userSharedViewModel.getToken().observe(viewLifecycleOwner) { token ->
             if (token.isNotEmpty()) {
                 findNavController().popBackStack()
             }
         }
-        storyViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding?.progressBar?.isVisible = isLoading
         }
-        storyViewModel.isFormValid.observe(viewLifecycleOwner) { isFormValid ->
+        userSharedViewModel.isFormValid.observe(viewLifecycleOwner) { isFormValid ->
             binding?.btnLogin?.isEnabled = isFormValid
         }
     }
