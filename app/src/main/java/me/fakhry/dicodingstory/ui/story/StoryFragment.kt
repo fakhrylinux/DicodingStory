@@ -2,6 +2,7 @@ package me.fakhry.dicodingstory.ui.story
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -13,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
@@ -27,8 +28,9 @@ class StoryFragment : Fragment() {
 
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding
-    private lateinit var storyViewModel: StoryViewModel
     private val storyListAdapter = StoryAdapter(arrayListOf())
+    private lateinit var pref: UserPreferences
+    private lateinit var storyViewModel: StoryViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,19 +43,32 @@ class StoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupMenu()
-
-        val pref = UserPreferences.getInstance(requireContext().dataStore)
+        pref = UserPreferences.getInstance(requireContext().dataStore)
         storyViewModel =
             ViewModelProvider(this, StoryViewModelFactory(pref))[StoryViewModel::class.java]
+
+        isLoggedIn()
+        setupMenu()
+        observeViewModel()
 
         val layoutManager = LinearLayoutManager(context)
         binding?.rvStories?.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(activity, layoutManager.orientation)
         binding?.rvStories?.addItemDecoration(itemDecoration)
         binding?.rvStories?.adapter = storyListAdapter
+    }
 
-        observeViewModel()
+    private fun isLoggedIn() {
+        lifecycleScope.launch {
+            storyViewModel.getToken().observe(viewLifecycleOwner) { token ->
+                Log.d("StoryFragment", "baris 112: $token")
+                if (token.isNotEmpty()) {
+                    storyViewModel.getAllStories(token)
+                } else {
+                    findNavController().navigate(R.id.loginFragment)
+                }
+            }
+        }
     }
 
     private fun setupMenu() {
@@ -68,12 +83,9 @@ class StoryFragment : Fragment() {
                         viewLifecycleOwner.lifecycleScope.launch {
                             storyViewModel.clearToken()
                         }
-                        requireView().findNavController()
-                            .navigate(R.id.action_storyFragment_to_loginFragment)
-//                        activity?.finish()
+                        findNavController().navigate(R.id.action_storyFragment_to_loginFragment)
                     }
                 }
-
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)

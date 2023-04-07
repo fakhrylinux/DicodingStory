@@ -2,7 +2,7 @@ package me.fakhry.dicodingstory.network.retrofit
 
 import me.fakhry.dicodingstory.network.model.GetAllStoriesResponse
 import me.fakhry.dicodingstory.network.model.LoginRequest
-import me.fakhry.dicodingstory.network.response.LoginResponse
+import me.fakhry.dicodingstory.network.model.LoginResponse
 import retrofit2.Call
 import retrofit2.http.*
 

@@ -1,11 +1,14 @@
 package me.fakhry.dicodingstory.ui.auth.login
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.network.model.LoginRequest
-import me.fakhry.dicodingstory.network.response.LoginResponse
+import me.fakhry.dicodingstory.network.model.LoginResponse
 import me.fakhry.dicodingstory.network.retrofit.ApiConfig
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,7 +30,6 @@ class LoginViewModel(private val pref: UserPreferences) : ViewModel() {
 
     fun loginRequest(email: String, password: String) {
         _isLoading.value = true
-        _isLoginSuccess.value = false
         val loginRequest = LoginRequest(email = email, password = password)
         val client = ApiConfig.getApiServices().loginRequest(loginRequest)
         client.enqueue(object : Callback<LoginResponse> {
@@ -39,27 +41,29 @@ class LoginViewModel(private val pref: UserPreferences) : ViewModel() {
                     if (responseBody?.error == true) {
                         _isLoginSuccess.value = false
                         _responseMessage.value = responseBody.message
+                        Log.d("LoginViewModel", "baris 61: ${responseBody.message}")
                     } else {
-                        val token = response.body()?.loginResult?.token
+                        _responseMessage.value = responseBody?.message
+                        val token = responseBody?.loginResult?.token
                         if (token != null) {
                             saveToken(token)
                         }
                         _isLoginSuccess.value = true
                     }
+                } else {
+                    _isLoginSuccess.value = false
+                    _responseMessage.value = response.body()?.message
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 _isLoading.value = false
+                _isLoginSuccess.value = false
                 _isFormValid.value = true
                 _responseMessage.value = "${t.message}"
                 Log.e("LoginFragment", "onFailure: ${t.message}")
             }
         })
-    }
-
-    fun getToken(): LiveData<String> {
-        return pref.getToken().asLiveData()
     }
 
     fun saveToken(token: String) {
@@ -75,5 +79,9 @@ class LoginViewModel(private val pref: UserPreferences) : ViewModel() {
         }
         _isFormValid.value = true
         return false
+    }
+
+    fun getResponseMessage(): String? {
+        return responseMessage.value
     }
 }
