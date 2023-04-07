@@ -2,7 +2,6 @@ package me.fakhry.dicodingstory.ui.story
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -13,11 +12,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.launch
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentStoryBinding
@@ -59,14 +56,11 @@ class StoryFragment : Fragment() {
     }
 
     private fun isLoggedIn() {
-        lifecycleScope.launch {
-            storyViewModel.getToken().observe(viewLifecycleOwner) { token ->
-                Log.d("StoryFragment", "baris 112: $token")
-                if (token.isNotEmpty()) {
-                    storyViewModel.getAllStories(token)
-                } else {
-                    findNavController().navigate(R.id.loginFragment)
-                }
+        storyViewModel.getToken().observe(viewLifecycleOwner) { token ->
+            if (token.isNotEmpty()) {
+                storyViewModel.getAllStories(token)
+            } else {
+                findNavController().navigate(R.id.loginFragment)
             }
         }
     }
@@ -80,10 +74,8 @@ class StoryFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.logout -> {
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            storyViewModel.clearToken()
-                        }
-                        findNavController().navigate(R.id.action_storyFragment_to_loginFragment)
+                        storyViewModel.logout()
+                        findNavController().navigate(R.id.loginFragment)
                     }
                 }
                 return true

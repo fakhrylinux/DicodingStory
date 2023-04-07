@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentLoginBinding
@@ -73,17 +72,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        storyViewModel.isLoginSuccess.observe(viewLifecycleOwner) { isLoginSuccess ->
-            if (isLoginSuccess) {
-                findNavController().navigateUp()
-            } else {
-                storyViewModel.getResponseMessage()?.let {
-                    Snackbar.make(
-                        requireActivity().findViewById(R.id.container),
-                        it,
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
+        storyViewModel.getToken().observe(viewLifecycleOwner) { token ->
+            if (token.isNotEmpty()) {
+                findNavController().popBackStack()
             }
         }
         storyViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->

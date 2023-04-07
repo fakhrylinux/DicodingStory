@@ -1,6 +1,5 @@
 package me.fakhry.dicodingstory.ui.story
 
-import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -43,7 +42,6 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
     val isFormValid: LiveData<Boolean> = _isFormValid
 
     fun getAllStories(token: String) {
-        Log.d("StoryViewModel", "getAllStories: $token")
         val client = ApiConfig.getApiServices().getAllStories("Bearer $token")
         client.enqueue(object : Callback<GetAllStoriesResponse> {
             override fun onResponse(
@@ -66,7 +64,6 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
                 _isLoading.value = false
                 _isError.value = true
                 _respondMessage.value = "${t.message}"
-                Log.d(TAG, "onFailure: ${t.message}")
             }
         })
     }
@@ -75,8 +72,11 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
         return pref.getToken().asLiveData()
     }
 
-    suspend fun clearToken() {
-        pref.clearToken()
+    fun logout() {
+        viewModelScope.launch {
+            pref.clearToken()
+            _isLoggedIn.value = false
+        }
     }
 
     fun loginRequest(email: String, password: String) {
@@ -92,7 +92,6 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
                     if (responseBody?.error == true) {
                         _isLoginSuccess.value = false
                         _responseMessage.value = responseBody.message
-                        Log.d("LoginViewModel", "baris 61: ${responseBody.message}")
                     } else {
                         _responseMessage.value = responseBody?.message
                         val token = responseBody?.loginResult?.token
@@ -112,7 +111,6 @@ class StoryViewModel(private val pref: UserPreferences) : ViewModel() {
                 _isLoginSuccess.value = false
                 _isFormValid.value = true
                 _responseMessage.value = "${t.message}"
-                Log.e("LoginFragment", "onFailure: ${t.message}")
             }
         })
     }
