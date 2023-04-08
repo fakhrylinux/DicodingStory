@@ -1,6 +1,8 @@
 package me.fakhry.dicodingstory.network.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class GetAllStoriesResponse(
 
@@ -14,6 +16,7 @@ data class GetAllStoriesResponse(
     val message: String
 )
 
+@Parcelize
 data class ListStoryItem(
 
     @field:SerializedName("photoUrl")
@@ -27,4 +30,4 @@ data class ListStoryItem(
 
     @field:SerializedName("description")
     val description: String,
-)
+) : Parcelable

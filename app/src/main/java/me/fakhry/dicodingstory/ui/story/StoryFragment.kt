@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentStoryBinding
+import me.fakhry.dicodingstory.network.model.ListStoryItem
 import me.fakhry.dicodingstory.ui.UserSharedViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
@@ -86,7 +87,7 @@ class StoryFragment : Fragment() {
 
     private fun observeViewModel() {
         userSharedViewModel.listStories.observe(viewLifecycleOwner) { listStories ->
-            storyListAdapter.setData(listStories)
+            setupStoryList(listStories)
         }
         userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding?.progressBar?.isVisible = isLoading
@@ -97,6 +98,16 @@ class StoryFragment : Fragment() {
         userSharedViewModel.respondMessage.observe(viewLifecycleOwner) { message ->
             binding?.tvErrorMessage?.text = message
         }
+    }
+
+    private fun setupStoryList(listStories: List<ListStoryItem>) {
+        storyListAdapter.setData(listStories)
+        storyListAdapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
+            override fun onItemClicked(item: ListStoryItem) {
+                val direction = StoryFragmentDirections.actionStoryFragmentToDetailFragment(item)
+                findNavController().navigate(direction)
+            }
+        })
     }
 
     override fun onDestroy() {

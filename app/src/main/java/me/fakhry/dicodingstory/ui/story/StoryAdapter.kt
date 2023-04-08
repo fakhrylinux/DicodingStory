@@ -10,6 +10,12 @@ import me.fakhry.dicodingstory.network.model.ListStoryItem
 class StoryAdapter(private val listStories: ArrayList<ListStoryItem>) :
     RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
 
+    private lateinit var onItemClickCallback: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
+
     class ViewHolder(var binding: StoryItemBinding) : RecyclerView.ViewHolder(binding.root) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,10 +34,18 @@ class StoryAdapter(private val listStories: ArrayList<ListStoryItem>) :
         holder.binding.tvCreatedAt.text = createdAt
         holder.binding.ivPost.load(photoUrl)
         holder.binding.tvCaption.text = description
+
+        holder.itemView.setOnClickListener {
+            onItemClickCallback.onItemClicked(listStories[holder.adapterPosition])
+        }
     }
 
     fun setData(list: List<ListStoryItem>) {
         listStories.addAll(list)
         notifyDataSetChanged()
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(item: ListStoryItem)
     }
 }

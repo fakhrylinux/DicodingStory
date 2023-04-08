@@ -18,11 +18,7 @@
         android:id="@+id/registerFragment"
         android:name="me.fakhry.dicodingstory.ui.auth.register.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register">
-        <action
-            android:id="@+id/action_registerFragment_to_storyFragment"
-            app:destination="@id/storyFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_register"/>
     <fragment
         android:id="@+id/storyFragment"
         android:name="me.fakhry.dicodingstory.ui.story.StoryFragment"
@@ -34,5 +30,17 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_storyFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="me.fakhry.dicodingstory.ui.detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <argument
+            android:name="detail"
+            app:argType="me.fakhry.dicodingstory.network.model.ListStoryItem" />
     </fragment>
 </navigation>
