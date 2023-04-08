@@ -57,7 +57,6 @@ class LoginFragment : Fragment() {
         binding?.btnLogin?.setOnClickListener {
             val parentView = activity?.findViewById(R.id.frame_container) as View
             hideSoftKeyboard(parentView)
-
             val email = binding?.etEmail?.text.toString()
             val password = binding?.etPassword?.text.toString()
             login(email, password)
