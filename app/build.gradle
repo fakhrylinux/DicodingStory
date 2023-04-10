@@ -61,7 +61,7 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-    implementation "com.squareup.retrofit2:converter-scalars:2.9.0"
+//    implementation "com.squareup.retrofit2:converter-scalars:2.9.0"
 
     // Okhttp3
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
@@ -71,4 +71,9 @@ dependencies {
 
     // Coil
     implementation 'io.coil-kt:coil:2.2.2'
+
+    // CameraX
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-view:${camerax_version}"
 }

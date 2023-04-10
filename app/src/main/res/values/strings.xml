@@ -22,4 +22,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="register">Register</string>
     <string name="logout">Logout</string>
+    <string name="choose_photo">Choose Photo</string>
+    <string name="caption">Caption</string>
+    <string name="create_story">Create Story</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

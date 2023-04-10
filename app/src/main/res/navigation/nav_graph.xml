@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="me.fakhry.dicodingstory.ui.auth.login.LoginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
@@ -17,12 +17,12 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="me.fakhry.dicodingstory.ui.auth.register.RegisterFragment"
-        android:label="fragment_register"
-        tools:layout="@layout/fragment_register"/>
+        android:label="Register"
+        tools:layout="@layout/fragment_register" />
     <fragment
         android:id="@+id/storyFragment"
         android:name="me.fakhry.dicodingstory.ui.story.StoryFragment"
-        android:label="fragment_story"
+        android:label="Timeline"
 
         tools:layout="@layout/fragment_story">
         <action
@@ -33,14 +33,31 @@
         <action
             android:id="@+id/action_storyFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_storyFragment_to_createStoryFragment"
+            app:destination="@id/createStoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
         android:name="me.fakhry.dicodingstory.ui.detail.DetailFragment"
-        android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" >
+        android:label="Story"
+        tools:layout="@layout/fragment_detail">
         <argument
             android:name="detail"
             app:argType="me.fakhry.dicodingstory.network.model.ListStoryItem" />
     </fragment>
+    <fragment
+        android:id="@+id/createStoryFragment"
+        android:name="me.fakhry.dicodingstory.ui.createstory.CreateStoryFragment"
+        android:label="Create Story"
+        tools:layout="@layout/fragment_create_story">
+        <argument
+            android:name="token"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="me.fakhry.dicodingstory.ui.createstory.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
 </navigation>

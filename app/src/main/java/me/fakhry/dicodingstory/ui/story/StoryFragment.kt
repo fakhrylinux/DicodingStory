@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentStoryBinding
@@ -55,6 +57,12 @@ class StoryFragment : Fragment() {
         val itemDecoration = DividerItemDecoration(activity, layoutManager.orientation)
         binding?.rvStories?.addItemDecoration(itemDecoration)
         binding?.rvStories?.adapter = storyListAdapter
+
+        val token = runBlocking { pref.getToken().first() }
+        binding?.fabCreate?.setOnClickListener {
+            val direction = StoryFragmentDirections.actionStoryFragmentToCreateStoryFragment(token)
+            findNavController().navigate(direction)
+        }
     }
 
     private fun isLoggedIn() {
