@@ -65,7 +65,8 @@ class CreateStoryFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.isSuccess.observe(viewLifecycleOwner) { isSuccess ->
-            if (isSuccess) findNavController().popBackStack()
+//            if (isSuccess) findNavController().popBackStack()
+            if (isSuccess) findNavController().navigate(R.id.storyFragment)
         }
     }
 

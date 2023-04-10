@@ -2,6 +2,7 @@ package me.fakhry.dicodingstory.ui.story
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -29,9 +30,11 @@ class StoryFragment : Fragment() {
 
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding
+    private var stories: MutableList<ListStoryItem> = mutableListOf()
     private val storyListAdapter = StoryAdapter(arrayListOf())
     private lateinit var pref: UserPreferences
     private lateinit var userSharedViewModel: UserSharedViewModel
+    private lateinit var token: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,11 +61,16 @@ class StoryFragment : Fragment() {
         binding?.rvStories?.addItemDecoration(itemDecoration)
         binding?.rvStories?.adapter = storyListAdapter
 
-        val token = runBlocking { pref.getToken().first() }
+        token = runBlocking { pref.getToken().first() }
         binding?.fabCreate?.setOnClickListener {
             val direction = StoryFragmentDirections.actionStoryFragmentToCreateStoryFragment(token)
             findNavController().navigate(direction)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        userSharedViewModel.getAllStories(token)
     }
 
     private fun isLoggedIn() {
@@ -95,7 +103,9 @@ class StoryFragment : Fragment() {
 
     private fun observeViewModel() {
         userSharedViewModel.listStories.observe(viewLifecycleOwner) { listStories ->
-            setupStoryList(listStories)
+            stories.clear()
+            stories.addAll(listStories)
+            setupStoryList(stories)
         }
         userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding?.progressBar?.isVisible = isLoading
@@ -110,6 +120,7 @@ class StoryFragment : Fragment() {
 
     private fun setupStoryList(listStories: List<ListStoryItem>) {
         storyListAdapter.setData(listStories)
+        storyListAdapter.notifyDataSetChanged()
         storyListAdapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
             override fun onItemClicked(item: ListStoryItem) {
                 val direction = StoryFragmentDirections.actionStoryFragmentToDetailFragment(item)
