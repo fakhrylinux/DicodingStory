@@ -59,6 +59,14 @@ class CreateStoryFragment : Fragment() {
         binding?.btnTakePhoto?.setOnClickListener { startCameraX() }
         binding?.btnChoosePhoto?.setOnClickListener { startGallery() }
         binding?.btnSubmit?.setOnClickListener { submitStory() }
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.isSuccess.observe(viewLifecycleOwner) { isSuccess ->
+            if (isSuccess) findNavController().popBackStack()
+        }
     }
 
     private fun submitStory() {
@@ -104,5 +112,10 @@ class CreateStoryFragment : Fragment() {
 
     companion object {
         const val CAMERA_X_RESULT = "200"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
