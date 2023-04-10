@@ -1,7 +1,7 @@
 package me.fakhry.dicodingstory.ui
 
+import android.util.Log
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.network.model.GetAllStoriesResponse
@@ -15,16 +15,8 @@ import retrofit2.Response
 
 class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
 
-    private val _isLoggedIn = MutableLiveData<Boolean>()
-    val isLoggedIn: LiveData<Boolean> = _isLoggedIn
-
     private val _listStories = MutableLiveData<List<ListStoryItem>>()
     val listStories: LiveData<List<ListStoryItem>> = _listStories
-
-    private val token: Flow<String> = pref.getToken()
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
 
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
@@ -35,11 +27,8 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
     private val _responseMessage = MutableLiveData<String>()
     val responseMessage: LiveData<String> = _responseMessage
 
-    private val _isLoginSuccess = MutableLiveData<Boolean>()
-    val isLoginSuccess: LiveData<Boolean> = _isLoginSuccess
-
-    private val _isFormValid = MutableLiveData<Boolean>()
-    val isFormValid: LiveData<Boolean> = _isFormValid
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
 
     fun getAllStories(token: String) {
         val client = ApiConfig.getApiServices().getAllStories("Bearer $token")
@@ -75,7 +64,6 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
     fun logout() {
         viewModelScope.launch {
             pref.clearToken()
-            _isLoggedIn.value = false
         }
     }
 
@@ -86,30 +74,22 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
         client.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 _isLoading.value = false
-                _isFormValid.value = true
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    if (responseBody?.error == true) {
-                        _isLoginSuccess.value = false
-                        _responseMessage.value = responseBody.message
-                    } else {
-                        _responseMessage.value = responseBody?.message
-                        val token = responseBody?.loginResult?.token
+                    if (responseBody != null && !responseBody.error) {
+                        val token = responseBody.loginResult?.token
                         if (token != null) {
                             saveToken(token)
                         }
-                        _isLoginSuccess.value = true
                     }
                 } else {
-                    _isLoginSuccess.value = false
-                    _responseMessage.value = response.body()?.message
+                    _responseMessage.value = "Your email or password is incorrect"
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 _isLoading.value = false
-                _isLoginSuccess.value = false
-                _isFormValid.value = true
+                Log.d("viewModel", "${t.message}")
                 _responseMessage.value = "${t.message}"
             }
         })
@@ -119,13 +99,5 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
         viewModelScope.launch {
             pref.saveToken(token)
         }
-    }
-
-    fun getResponseMessage(): String? {
-        return responseMessage.value
-    }
-
-    companion object {
-        private const val TAG = "StoryViewModel"
     }
 }

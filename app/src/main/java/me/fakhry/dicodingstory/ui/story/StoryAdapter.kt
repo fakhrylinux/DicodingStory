@@ -27,11 +27,9 @@ class StoryAdapter(private val listStories: ArrayList<ListStoryItem>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val name = listStories[position].name
-        val createdAt = listStories[position].createdAt
         val photoUrl = listStories[position].photoUrl
         val description = listStories[position].description
         holder.binding.tvName.text = name
-        holder.binding.tvCreatedAt.text = createdAt
         holder.binding.ivPost.load(photoUrl)
         holder.binding.tvCaption.text = description
 

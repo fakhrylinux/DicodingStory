@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,9 +34,9 @@ class CreateStoryFragment : Fragment() {
     private val binding get() = _binding
     private var result: File? = null
     private var getFile: File? = null
-    private var isBackCamera: Boolean? = null
     private val viewModel: CreateStoryViewModel by viewModels()
     private val args: CreateStoryFragmentArgs by navArgs()
+    private var isBackCamera: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,12 +49,16 @@ class CreateStoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setFragmentResultListener(CAMERA_X_IS_BACK_CAMERA) { _, bundle ->
+            isBackCamera = bundle.getBoolean("isBackCamera")
+            Log.d("CreateStory", "isBackCamera: $isBackCamera")
+        }
         setFragmentResultListener("200") { _, bundle ->
             @Suppress("DEPRECATION")
             result = bundle.getSerializable("result") as File
             getFile = result
             val resultImage =
-                rotateBitmap(BitmapFactory.decodeFile(getFile?.path ?: ""), true)
+                rotateBitmap(BitmapFactory.decodeFile(getFile?.path ?: ""), isBackCamera)
             binding?.ivPhoto?.load(resultImage)
         }
         binding?.btnTakePhoto?.setOnClickListener { startCameraX() }
@@ -65,7 +70,6 @@ class CreateStoryFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.isSuccess.observe(viewLifecycleOwner) { isSuccess ->
-//            if (isSuccess) findNavController().popBackStack()
             if (isSuccess) findNavController().navigate(R.id.storyFragment)
         }
     }
@@ -113,6 +117,7 @@ class CreateStoryFragment : Fragment() {
 
     companion object {
         const val CAMERA_X_RESULT = "200"
+        const val CAMERA_X_IS_BACK_CAMERA = "100"
     }
 
     override fun onDestroy() {

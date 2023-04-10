@@ -12,12 +12,6 @@ import retrofit2.Response
 
 class RegisterViewModel : ViewModel() {
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _isSuccess = MutableLiveData<Boolean>()
-    val isSuccess: LiveData<Boolean> = _isSuccess
-
     private val _responseMessage = MutableLiveData<String>()
     val responseMessage: LiveData<String> = _responseMessage
 
@@ -29,7 +23,6 @@ class RegisterViewModel : ViewModel() {
         email: String,
         password: String,
     ) {
-        _isLoading.value = true
         val registerRequest = RegisterRequest(name, email, password)
         val client = ApiConfig.getApiServices().registerRequest(registerRequest)
         client.enqueue(object : Callback<RegisterResponse> {
@@ -40,7 +33,6 @@ class RegisterViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null && !responseBody.error) {
-                        _isSuccess.value = true
                         _isError.value = false
                         _responseMessage.value = responseBody.message
                     }

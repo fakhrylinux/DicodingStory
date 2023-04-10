@@ -16,9 +16,6 @@ class CreateStoryViewModel : ViewModel() {
     private val _isSuccess = MutableLiveData<Boolean>()
     val isSuccess: LiveData<Boolean> = _isSuccess
 
-    private val _responseMessage = MutableLiveData<String>()
-    val responseMessage: LiveData<String> = _responseMessage
-
     fun addStoryRequest(photo: MultipartBody.Part, description: RequestBody, token: String) {
         val bearerToken = "Bearer $token"
         val service = ApiConfig.getApiServices().addNewStory(photo, description, bearerToken)
@@ -31,14 +28,12 @@ class CreateStoryViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     if (responseBody != null && !responseBody.error) {
                         _isSuccess.value = true
-                        _responseMessage.value = responseBody.message
                     }
                 }
             }
 
             override fun onFailure(call: Call<AddNewStoryResponse>, t: Throwable) {
                 _isSuccess.value = false
-                _responseMessage.value = "${t.message}"
             }
         })
     }

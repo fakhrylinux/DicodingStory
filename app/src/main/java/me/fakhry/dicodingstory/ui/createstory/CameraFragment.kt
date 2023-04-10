@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
@@ -57,7 +56,6 @@ class CameraFragment : Fragment() {
             cameraSelector =
                 if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) CameraSelector.DEFAULT_FRONT_CAMERA
                 else CameraSelector.DEFAULT_BACK_CAMERA
-            Log.d("cameraselector", "tipe: $cameraSelector")
             startCamera()
         }
     }
@@ -137,14 +135,15 @@ class CameraFragment : Fragment() {
                         }
 
                         override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                            val isBackCamera = cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA
+                            setFragmentResult(
+                                CreateStoryFragment.CAMERA_X_IS_BACK_CAMERA,
+                                bundleOf("isBackCamera" to isBackCamera)
+                            )
                             setFragmentResult(
                                 CreateStoryFragment.CAMERA_X_RESULT,
                                 bundleOf("result" to photoFile),
                             )
-//                            setFragmentResult(
-//                                "isBackCamera",
-//                                bundleOf("camera" to cameraSelector)
-//                            )
                             findNavController().popBackStack()
                         }
                     }

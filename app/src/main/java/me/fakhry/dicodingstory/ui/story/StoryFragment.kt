@@ -2,7 +2,6 @@ package me.fakhry.dicodingstory.ui.story
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
