@@ -19,6 +19,7 @@ import androidx.navigation.fragment.navArgs
 import coil.load
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.databinding.FragmentCreateStoryBinding
+import me.fakhry.dicodingstory.util.reduceFileImage
 import me.fakhry.dicodingstory.util.rotateBitmap
 import me.fakhry.dicodingstory.util.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
@@ -77,7 +78,7 @@ class CreateStoryFragment : Fragment() {
     private fun submitStory() {
         val token = args.token
         if (getFile != null) {
-            val file = getFile as File
+            val file = reduceFileImage(getFile as File)
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val description =
                 (binding?.etCaption?.text.toString()).toRequestBody("text/plain".toMediaType())
