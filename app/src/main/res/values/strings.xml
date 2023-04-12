@@ -1,32 +1,19 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Dicoding Story</string>
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="register_here">Register Here</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello register fragment</string>
-    <string name="hello_story_fragment">Hello story fragment</string>
     <string name="login">Login</string>
     <string name="name">Name</string>
-    <string name="two_days_ago">2 days ago</string>
     <string name="username">fakhrylinux</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="no_story_found">No story found</string>
     <string name="password">Password</string>
-    <string name="confirm_password">Confirm Password</string>
     <string name="register">Register</string>
     <string name="logout">Logout</string>
     <string name="choose_photo">Choose Photo</string>
-    <string name="caption">Caption</string>
+    <string name="caption">Add your story</string>
     <string name="create_story">Create Story</string>
     <string name="take_photo">Take Photo</string>
-    <string name="signup">Signup</string>
     <string name="email_error">Please field your email</string>
     <string name="password_error">Please field your password</string>
     <string name="dicoding_story">Dicoding Story</string>
