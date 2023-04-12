@@ -93,8 +93,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
     }
 
     private fun login() {
-        binding?.etEmailLayout?.error = null
-        binding?.etPasswordLayout?.error = null
         hideSoftKeyboard()
         val email = binding?.etEmail?.text.toString()
         val password = binding?.etPassword?.text.toString()
@@ -105,17 +103,14 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     private fun isInputValid(email: String, password: String): Boolean {
         if (email.isEmpty()) {
-            binding?.etEmailLayout?.error = getString(R.string.email_error)
+            binding?.etEmail?.error = getString(R.string.email_error)
             binding?.etEmail?.requestFocus()
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding?.etEmailLayout?.error = getString(R.string.valid_email)
+            binding?.etEmail?.error = getString(R.string.valid_email)
             binding?.etEmail?.requestFocus()
         } else if (password.isEmpty()) {
-            binding?.etPasswordLayout?.error = getString(R.string.password_error)
             binding?.etPassword?.requestFocus()
         } else {
-            binding?.etEmailLayout?.error = null
-            binding?.etPasswordLayout?.error = null
             binding?.etPassword?.error = null
             binding?.etEmail?.clearFocus()
             binding?.etPassword?.clearFocus()
