@@ -31,38 +31,52 @@
             android:layout_marginBottom="88dp"
             android:text="@string/dicoding_story" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_email"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_email_layout"
+            style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:alpha="0"
             android:hint="@string/prompt_email"
-            android:inputType="textEmailAddress"
-            android:selectAllOnFocus="true"
-            android:textSize="24sp" />
+            app:endIconMode="clear_text"
+            app:errorEnabled="true">
 
-        <me.fakhry.dicodingstory.ui.component.PasswordEditText
-            android:id="@+id/et_password"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_password_layout"
+            style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:alpha="0"
             android:hint="@string/password"
-            android:selectAllOnFocus="true"
-            android:textSize="24sp" />
+            app:errorEnabled="true">
+
+            <me.fakhry.dicodingstory.ui.component.PasswordEditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_login"
-            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="88dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="88dp"
-            android:alpha="0"
             android:text="@string/login"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:cornerRadius="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_password" />

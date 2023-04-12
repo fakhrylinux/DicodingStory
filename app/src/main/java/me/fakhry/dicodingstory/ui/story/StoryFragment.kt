@@ -65,6 +65,7 @@ class StoryFragment : Fragment() {
             val direction = StoryFragmentDirections.actionStoryFragmentToCreateStoryFragment(token)
             findNavController().navigate(direction)
         }
+        stories.clear()
     }
 
     override fun onResume() {

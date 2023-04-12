@@ -31,4 +31,8 @@
     <string name="password_error">Please field your password</string>
     <string name="dicoding_story">Dicoding Story</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="valid_email">Please use valid email</string>
+    <string name="caption_cannot_be_empty">Caption cannot be empty</string>
+    <string name="take_photo_first">Take photo first</string>
+    <string name="name_error">Please field your name</string>
 </resources>

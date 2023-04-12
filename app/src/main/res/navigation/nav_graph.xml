@@ -63,6 +63,6 @@
     <fragment
         android:id="@+id/cameraFragment"
         android:name="me.fakhry.dicodingstory.ui.createstory.CameraFragment"
-        android:label="fragment_camera"
+        android:label="Camera"
         tools:layout="@layout/fragment_camera" />
 </navigation>

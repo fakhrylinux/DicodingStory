@@ -16,7 +16,14 @@ class CreateStoryViewModel : ViewModel() {
     private val _isSuccess = MutableLiveData<Boolean>()
     val isSuccess: LiveData<Boolean> = _isSuccess
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _responseMessage = MutableLiveData<String>()
+    val responseMessage: LiveData<String> = _responseMessage
+
     fun addStoryRequest(photo: MultipartBody.Part, description: RequestBody, token: String) {
+        _isLoading.value = true
         val bearerToken = "Bearer $token"
         val service = ApiConfig.getApiServices().addNewStory(photo, description, bearerToken)
         service.enqueue(object : Callback<AddNewStoryResponse> {
@@ -24,6 +31,7 @@ class CreateStoryViewModel : ViewModel() {
                 call: Call<AddNewStoryResponse>,
                 response: Response<AddNewStoryResponse>
             ) {
+                _isLoading.value = false
                 val responseBody = response.body()
                 if (response.isSuccessful) {
                     if (responseBody != null && !responseBody.error) {
@@ -33,6 +41,8 @@ class CreateStoryViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<AddNewStoryResponse>, t: Throwable) {
+                _isLoading.value = false
+                _responseMessage.value = "${t.message}"
                 _isSuccess.value = false
             }
         })
