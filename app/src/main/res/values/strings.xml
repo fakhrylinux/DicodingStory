@@ -22,4 +22,5 @@
     <string name="caption_cannot_be_empty">Caption cannot be empty</string>
     <string name="take_photo_first">Take photo first</string>
     <string name="name_error">Please field your name</string>
+    <string name="retry">Retry</string>
 </resources>

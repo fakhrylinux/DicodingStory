@@ -2,13 +2,15 @@ package me.fakhry.dicodingstory.ui.story
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import me.fakhry.dicodingstory.databinding.StoryItemBinding
-import me.fakhry.dicodingstory.network.model.ListStoryItem
+import me.fakhry.dicodingstory.network.model.StoryItem
 
-class StoryAdapter(private val listStories: ArrayList<ListStoryItem>) :
-    RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
+
+class StoryAdapter : PagingDataAdapter<StoryItem, StoryAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 
@@ -16,34 +18,48 @@ class StoryAdapter(private val listStories: ArrayList<ListStoryItem>) :
         this.onItemClickCallback = onItemClickCallback
     }
 
-    class ViewHolder(var binding: StoryItemBinding) : RecyclerView.ViewHolder(binding.root) {}
+    class ViewHolder(private var binding: StoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(data: StoryItem) {
+            binding.tvName.text = data.name
+            binding.ivPost.load(data.photoUrl)
+            binding.tvCaption.text = data.description
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = StoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = listStories.size
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val name = listStories[position].name
-        val photoUrl = listStories[position].photoUrl
-        val description = listStories[position].description
-        holder.binding.tvName.text = name
-        holder.binding.ivPost.load(photoUrl)
-        holder.binding.tvCaption.text = description
-
-        holder.itemView.setOnClickListener {
-            onItemClickCallback.onItemClicked(listStories[holder.adapterPosition])
+        val data = getItem(position)
+        if (data != null) {
+            holder.bind(data)
+            holder.itemView.setOnClickListener {
+                onItemClickCallback.onItemClicked(data)
+            }
         }
     }
 
-    fun setData(list: List<ListStoryItem>) {
-        listStories.addAll(list)
-        notifyDataSetChanged()
+    interface OnItemClickCallback {
+        fun onItemClicked(item: StoryItem)
     }
 
-    interface OnItemClickCallback {
-        fun onItemClicked(item: ListStoryItem)
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryItem>() {
+            override fun areItemsTheSame(
+                oldItem: StoryItem,
+                newItem: StoryItem
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: StoryItem,
+                newItem: StoryItem
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
     }
 }

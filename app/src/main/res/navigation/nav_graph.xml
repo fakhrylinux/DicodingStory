@@ -44,7 +44,7 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="detail"
-            app:argType="me.fakhry.dicodingstory.network.model.ListStoryItem" />
+            app:argType="me.fakhry.dicodingstory.network.model.StoryItem" />
     </fragment>
     <fragment
         android:id="@+id/createStoryFragment"

@@ -23,4 +23,5 @@
     <string name="caption_cannot_be_empty">Cerita tidak boleh kosong</string>
     <string name="take_photo_first">Ambil gambar dahulu</string>
     <string name="name_error">Mohon isi nama Anda</string>
+    <string name="retry">Ulang</string>
 </resources>

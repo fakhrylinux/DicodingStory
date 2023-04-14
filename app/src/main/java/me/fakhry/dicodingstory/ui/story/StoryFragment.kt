@@ -20,7 +20,7 @@ import kotlinx.coroutines.runBlocking
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentStoryBinding
-import me.fakhry.dicodingstory.network.model.ListStoryItem
+import me.fakhry.dicodingstory.network.model.StoryItem
 import me.fakhry.dicodingstory.ui.UserSharedViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
@@ -29,8 +29,7 @@ class StoryFragment : Fragment() {
 
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding
-    private var stories: MutableList<ListStoryItem> = mutableListOf()
-    private val storyListAdapter = StoryAdapter(arrayListOf())
+    private val storyListAdapter = StoryAdapter()
     private lateinit var pref: UserPreferences
     private lateinit var userSharedViewModel: UserSharedViewModel
     private lateinit var token: String
@@ -58,25 +57,32 @@ class StoryFragment : Fragment() {
         binding?.rvStories?.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(activity, layoutManager.orientation)
         binding?.rvStories?.addItemDecoration(itemDecoration)
-        binding?.rvStories?.adapter = storyListAdapter
+        binding?.rvStories?.adapter = storyListAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                storyListAdapter.retry()
+            }
+        )
+
+        storyListAdapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
+            override fun onItemClicked(item: StoryItem) {
+                val direction = StoryFragmentDirections.actionStoryFragmentToDetailFragment(item)
+                findNavController().navigate(direction)
+            }
+        })
 
         token = runBlocking { pref.getToken().first() }
         binding?.fabCreate?.setOnClickListener {
             val direction = StoryFragmentDirections.actionStoryFragmentToCreateStoryFragment(token)
             findNavController().navigate(direction)
         }
-        stories.clear()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        userSharedViewModel.getAllStories(token)
     }
 
     private fun isLoggedIn() {
         userSharedViewModel.getToken().observe(viewLifecycleOwner) { token ->
             if (token.isNotEmpty()) {
-                userSharedViewModel.getAllStories(token)
+                userSharedViewModel.getAllStories().observe(viewLifecycleOwner) { stories ->
+                    storyListAdapter.submitData(lifecycle, stories)
+                }
             } else {
                 findNavController().navigate(R.id.loginFragment)
             }
@@ -102,11 +108,6 @@ class StoryFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        userSharedViewModel.listStories.observe(viewLifecycleOwner) { listStories ->
-            stories.clear()
-            stories.addAll(listStories)
-            setupStoryList(stories)
-        }
         userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding?.progressBar?.isVisible = isLoading
         }
@@ -116,17 +117,6 @@ class StoryFragment : Fragment() {
         userSharedViewModel.respondMessage.observe(viewLifecycleOwner) { message ->
             binding?.tvErrorMessage?.text = message
         }
-    }
-
-    private fun setupStoryList(listStories: List<ListStoryItem>) {
-        storyListAdapter.setData(listStories)
-        storyListAdapter.notifyDataSetChanged()
-        storyListAdapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
-            override fun onItemClicked(item: ListStoryItem) {
-                val direction = StoryFragmentDirections.actionStoryFragmentToDetailFragment(item)
-                findNavController().navigate(direction)
-            }
-        })
     }
 
     override fun onDestroy() {
