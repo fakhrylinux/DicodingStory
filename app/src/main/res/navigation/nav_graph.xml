@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_storyFragment_to_createStoryFragment"
             app:destination="@id/createStoryFragment" />
+        <action
+            android:id="@+id/action_storyFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -65,4 +68,13 @@
         android:name="me.fakhry.dicodingstory.ui.createstory.CameraFragment"
         android:label="Camera"
         tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="me.fakhry.dicodingstory.ui.map.MapsFragment"
+        android:label="Maps"
+        tools:layout="@layout/fragment_maps" >
+        <argument
+            android:name="token"
+            app:argType="string" />
+    </fragment>
 </navigation>

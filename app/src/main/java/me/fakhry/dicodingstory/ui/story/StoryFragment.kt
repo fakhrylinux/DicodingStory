@@ -82,6 +82,8 @@ class StoryFragment : Fragment() {
             if (token.isNotEmpty()) {
                 userSharedViewModel.getAllStories().observe(viewLifecycleOwner) { stories ->
                     storyListAdapter.submitData(lifecycle, stories)
+//                    val storyList = runBlocking { storyListAdapter.snapshot().items }
+//                    userSharedViewModel.save(storyList)
                 }
             } else {
                 findNavController().navigate(R.id.loginFragment)
@@ -100,6 +102,10 @@ class StoryFragment : Fragment() {
                     R.id.logout -> {
                         userSharedViewModel.logout()
                         findNavController().navigate(R.id.loginFragment)
+                    }
+                    R.id.map -> {
+                        val direction = StoryFragmentDirections.actionStoryFragmentToMapsFragment(token)
+                        findNavController().navigate(direction)
                     }
                 }
                 return true

@@ -2,10 +2,10 @@ package me.fakhry.dicodingstory.ui
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.liveData
+import androidx.paging.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.data.StoryPagingSource
@@ -31,6 +31,9 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _storyList = MutableLiveData<List<StoryItem>>()
+    val storyList: LiveData<List<StoryItem>> = _storyList
+
     init {
         getAllStories()
     }
@@ -44,9 +47,15 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
             pagingSourceFactory = {
                 StoryPagingSource(apiService, pref)
             }
-        ).liveData
+        )
 
-        return pagingData
+//        _storyList.value = pagingData.flow.map {
+//            it.map {
+//
+//            }
+//        }
+
+        return pagingData.liveData
     }
 
     fun getToken(): LiveData<String> {
@@ -91,5 +100,9 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
         viewModelScope.launch {
             pref.saveToken(token)
         }
+    }
+
+    fun save(items: List<StoryItem>) {
+        _storyList.value = items
     }
 }
