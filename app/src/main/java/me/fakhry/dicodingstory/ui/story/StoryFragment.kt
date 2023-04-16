@@ -25,7 +25,7 @@ import me.fakhry.dicodingstory.ui.UserSharedViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
-class StoryFragment : Fragment() {
+class StoryFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding
@@ -47,12 +47,31 @@ class StoryFragment : Fragment() {
 
         pref = UserPreferences.getInstance(requireContext().dataStore)
         userSharedViewModel =
-            ViewModelProvider(this, StoryViewModelFactory(pref))[UserSharedViewModel::class.java]
+            ViewModelProvider(
+                this,
+                StoryViewModelFactory(pref, requireContext())
+            )[UserSharedViewModel::class.java]
+        token = runBlocking { pref.getToken().first() }
 
         isLoggedIn()
         setupMenu()
         observeViewModel()
+        setupRecyclerView()
 
+        binding?.fabCreate?.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.fab_create -> {
+                val direction =
+                    StoryFragmentDirections.actionStoryFragmentToCreateStoryFragment(token)
+                findNavController().navigate(direction)
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(context)
         binding?.rvStories?.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(activity, layoutManager.orientation)
@@ -69,22 +88,15 @@ class StoryFragment : Fragment() {
                 findNavController().navigate(direction)
             }
         })
-
-        token = runBlocking { pref.getToken().first() }
-        binding?.fabCreate?.setOnClickListener {
-            val direction = StoryFragmentDirections.actionStoryFragmentToCreateStoryFragment(token)
-            findNavController().navigate(direction)
-        }
     }
 
     private fun isLoggedIn() {
         userSharedViewModel.getToken().observe(viewLifecycleOwner) { token ->
             if (token.isNotEmpty()) {
-                userSharedViewModel.getAllStories().observe(viewLifecycleOwner) { stories ->
-                    storyListAdapter.submitData(lifecycle, stories)
-//                    val storyList = runBlocking { storyListAdapter.snapshot().items }
-//                    userSharedViewModel.save(storyList)
-                }
+                userSharedViewModel.getAllStories()
+                    .observe(viewLifecycleOwner) { stories ->
+                        storyListAdapter.submitData(lifecycle, stories)
+                    }
             } else {
                 findNavController().navigate(R.id.loginFragment)
             }
@@ -104,7 +116,8 @@ class StoryFragment : Fragment() {
                         findNavController().navigate(R.id.loginFragment)
                     }
                     R.id.map -> {
-                        val direction = StoryFragmentDirections.actionStoryFragmentToMapsFragment(token)
+                        val direction =
+                            StoryFragmentDirections.actionStoryFragmentToMapsFragment(token)
                         findNavController().navigate(direction)
                     }
                 }

@@ -19,9 +19,6 @@ data class StoryWithLoc(
     @field:SerializedName("photoUrl")
     val photoUrl: String,
 
-    @field:SerializedName("createdAt")
-    val createdAt: String,
-
     @field:SerializedName("name")
     val name: String,
 

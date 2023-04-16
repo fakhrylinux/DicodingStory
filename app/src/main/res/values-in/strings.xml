@@ -25,4 +25,5 @@
     <string name="name_error">Mohon isi nama Anda</string>
     <string name="retry">Ulang</string>
     <string name="map">Peta</string>
+    <string name="add_story_button">Tombol Tambah Story</string>
 </resources>

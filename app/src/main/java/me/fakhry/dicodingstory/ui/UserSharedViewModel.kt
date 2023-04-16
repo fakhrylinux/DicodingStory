@@ -2,22 +2,23 @@ package me.fakhry.dicodingstory.ui
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.paging.*
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import kotlinx.coroutines.launch
 import me.fakhry.dicodingstory.UserPreferences
-import me.fakhry.dicodingstory.data.StoryPagingSource
 import me.fakhry.dicodingstory.network.model.LoginRequest
 import me.fakhry.dicodingstory.network.model.LoginResponse
 import me.fakhry.dicodingstory.network.model.StoryItem
 import me.fakhry.dicodingstory.network.retrofit.ApiConfig
+import me.fakhry.dicodingstory.repository.StoryRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
+class UserSharedViewModel(
+    private val pref: UserPreferences,
+    private val storyRepository: StoryRepository
+) : ViewModel() {
 
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
@@ -31,31 +32,26 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _storyList = MutableLiveData<List<StoryItem>>()
-    val storyList: LiveData<List<StoryItem>> = _storyList
-
     init {
         getAllStories()
     }
 
-    fun getAllStories(): LiveData<PagingData<StoryItem>> {
-        val apiService = ApiConfig.getApiServices()
-        val pagingData = Pager(
-            config = PagingConfig(
-                pageSize = 5
-            ),
-            pagingSourceFactory = {
-                StoryPagingSource(apiService, pref)
-            }
-        )
-
-//        _storyList.value = pagingData.flow.map {
-//            it.map {
-//
+//    fun getAllStories(): LiveData<PagingData<StoryItem>> {
+//        val apiService = ApiConfig.getApiServices()
+//        val pagingData = Pager(
+//            config = PagingConfig(
+//                pageSize = 5
+//            ),
+//            pagingSourceFactory = {
+//                StoryPagingSource(apiService, pref)
 //            }
-//        }
+//        )
+//
+//        return pagingData.liveData
+//    }
 
-        return pagingData.liveData
+    fun getAllStories(): LiveData<PagingData<StoryItem>> {
+        return storyRepository.getStory().cachedIn(viewModelScope)
     }
 
     fun getToken(): LiveData<String> {
@@ -100,9 +96,5 @@ class UserSharedViewModel(private val pref: UserPreferences) : ViewModel() {
         viewModelScope.launch {
             pref.saveToken(token)
         }
-    }
-
-    fun save(items: List<StoryItem>) {
-        _storyList.value = items
     }
 }

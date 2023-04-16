@@ -27,11 +27,17 @@ interface ApiService {
         @Query("size") size: Int
     ): GetAllStoriesResponse
 
+//    @GET("stories")
+//    fun getAllStoriesWithLocation(
+//        @Header("Authorization") token: String,
+//        @Query("location") location: Int
+//    ): Call<GetStoriesWithLocResponse>
+
     @GET("stories")
-    fun getAllStoriesWithLocation(
+    suspend fun getAllStoriesWithLocation(
         @Header("Authorization") token: String,
         @Query("location") location: Int
-    ): Call<GetStoriesWithLocResponse>
+    ): GetStoriesWithLocResponse
 
     @Multipart
     @POST("stories")

@@ -31,7 +31,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private val binding get() = _binding
     private lateinit var pref: UserPreferences
     private val userSharedViewModel: UserSharedViewModel by activityViewModels {
-        StoryViewModelFactory(pref)
+        StoryViewModelFactory(pref, requireContext())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +126,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
         }
         userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            enableDisableButton(!isLoading)
+            updateView(!isLoading)
         }
         userSharedViewModel.responseMessage.observe(viewLifecycleOwner) { responseMessage ->
             activity?.let { activity ->
@@ -139,7 +139,12 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun enableDisableButton(isLoading: Boolean) {
+    private fun updateView(isLoading: Boolean) {
+        if (!isLoading) {
+            binding?.progressBar?.visibility = View.VISIBLE
+        } else {
+            binding?.progressBar?.visibility = View.GONE
+        }
         binding?.btnLogin?.isEnabled = isLoading
         binding?.tvSignup?.isEnabled = isLoading
     }
