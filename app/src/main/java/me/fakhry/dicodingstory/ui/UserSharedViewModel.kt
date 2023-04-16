@@ -32,24 +32,6 @@ class UserSharedViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    init {
-        getAllStories()
-    }
-
-//    fun getAllStories(): LiveData<PagingData<StoryItem>> {
-//        val apiService = ApiConfig.getApiServices()
-//        val pagingData = Pager(
-//            config = PagingConfig(
-//                pageSize = 5
-//            ),
-//            pagingSourceFactory = {
-//                StoryPagingSource(apiService, pref)
-//            }
-//        )
-//
-//        return pagingData.liveData
-//    }
-
     fun getAllStories(): LiveData<PagingData<StoryItem>> {
         return storyRepository.getStory().cachedIn(viewModelScope)
     }
