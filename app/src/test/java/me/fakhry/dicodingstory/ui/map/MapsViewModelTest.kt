@@ -45,11 +45,11 @@ class MapsViewModelTest {
         Assert.assertNotNull(actualStory)
         Assert.assertTrue(actualStory is Result.Success)
         Assert.assertEquals(storyList.size, (actualStory as Result.Success).data.size)
-        Assert.assertSame(storyList[0].id, actualStory.data[0].id)
+        Assert.assertSame(storyList[0], actualStory.data[0])
     }
 
     @Test
-    fun `when No Data Should Null and Retur Error`() {
+    fun `when No Data Should Null and Return Error`() {
         val expectedStory = MutableLiveData<Result<List<StoryWithLoc>>>()
         expectedStory.value = Result.Error("Error")
         `when`(mapsRepository.getAllStoriesWithLocation("dummy_token", 1))
