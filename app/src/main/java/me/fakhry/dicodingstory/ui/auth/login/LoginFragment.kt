@@ -131,7 +131,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         userSharedViewModel.responseMessage.observe(viewLifecycleOwner) { responseMessage ->
             activity?.let { activity ->
                 Snackbar.make(
-                    activity.findViewById(R.id.container),
+                    activity.findViewById(R.id.frame_container),
                     responseMessage,
                     Snackbar.LENGTH_SHORT
                 ).show()

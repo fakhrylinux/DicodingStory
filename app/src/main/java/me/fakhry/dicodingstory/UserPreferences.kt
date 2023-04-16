@@ -9,17 +9,17 @@ import kotlinx.coroutines.flow.map
 
 class UserPreferences private constructor(private val dataStore: DataStore<Preferences>) {
 
-    private val TOKENKEY = stringPreferencesKey("token_key")
+    private val TOKEN_KEY = stringPreferencesKey("token_key")
 
     fun getToken(): Flow<String> {
         return dataStore.data.map { preferences ->
-            preferences[TOKENKEY] ?: ""
+            preferences[TOKEN_KEY] ?: ""
         }
     }
 
     suspend fun saveToken(token: String) {
         dataStore.edit { preferences ->
-            preferences[TOKENKEY] = token
+            preferences[TOKEN_KEY] = token
         }
     }
 
