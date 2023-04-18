@@ -22,6 +22,7 @@ import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentLoginBinding
 import me.fakhry.dicodingstory.ui.UserSharedViewModel
 import me.fakhry.dicodingstory.ui.story.StoryViewModelFactory
+import me.fakhry.dicodingstory.util.showLoading
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
@@ -126,7 +127,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
         }
         userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            updateView(!isLoading)
+            updateView(isLoading)
         }
         userSharedViewModel.responseMessage.observe(viewLifecycleOwner) { responseMessage ->
             activity?.let { activity ->
@@ -140,13 +141,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
     }
 
     private fun updateView(isLoading: Boolean) {
-        if (!isLoading) {
-            binding?.progressBar?.visibility = View.VISIBLE
-        } else {
-            binding?.progressBar?.visibility = View.GONE
-        }
-        binding?.btnLogin?.isEnabled = isLoading
-        binding?.tvSignup?.isEnabled = isLoading
+        binding?.progressBar?.showLoading(isLoading)
+        binding?.btnLogin?.isEnabled = !isLoading
+        binding?.tvSignup?.isEnabled = !isLoading
     }
 
     private fun hideSoftKeyboard() {

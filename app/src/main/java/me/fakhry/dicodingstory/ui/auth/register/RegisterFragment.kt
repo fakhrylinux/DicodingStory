@@ -44,8 +44,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     }
 
     private fun register() {
-        val parentView = activity?.findViewById(R.id.frame_container) as View
-        hideSoftKeyboard(parentView)
+        hideSoftKeyboard()
         val name = binding?.etName?.text.toString()
         val email = binding?.etEmail?.text.toString()
         val password = binding?.etPassword?.text.toString()
@@ -106,10 +105,11 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         binding?.btnRegister?.isEnabled = loading
     }
 
-    private fun hideSoftKeyboard(view: View) {
+    private fun hideSoftKeyboard() {
+        val parentView = activity?.findViewById(R.id.registerContainer) as View
         val imm =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        imm.hideSoftInputFromWindow(parentView.windowToken, 0)
     }
 
     override fun onDestroy() {
