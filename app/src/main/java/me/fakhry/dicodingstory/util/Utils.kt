@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Environment
 import android.view.View
 import android.widget.ProgressBar
-import androidx.core.view.isVisible
 import me.fakhry.dicodingstory.R
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -111,5 +110,17 @@ fun reduceFileImage(file: File): File {
 
     bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
 
+    return file
+}
+
+fun convertBitmapToFile(resultImage: Bitmap?, context: Context): File {
+    val stream = ByteArrayOutputStream()
+    resultImage?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+    val byteArray = stream.toByteArray()
+    val file = createCustomTempFile(context)
+    val fos = FileOutputStream(file)
+    fos.write(byteArray)
+    fos.flush()
+    fos.close()
     return file
 }

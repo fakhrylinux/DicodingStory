@@ -2,6 +2,7 @@ package me.fakhry.dicodingstory.ui.createstory
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +20,7 @@ import coil.load
 import com.google.android.material.snackbar.Snackbar
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.databinding.FragmentCreateStoryBinding
+import me.fakhry.dicodingstory.util.convertBitmapToFile
 import me.fakhry.dicodingstory.util.reduceFileImage
 import me.fakhry.dicodingstory.util.rotateBitmap
 import me.fakhry.dicodingstory.util.showLoading
@@ -39,6 +41,7 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
     private val viewModel: CreateStoryViewModel by viewModels()
     private val args: CreateStoryFragmentArgs by navArgs()
     private var isBackCamera: Boolean = true
+    private var resultImage: Bitmap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +61,7 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
             @Suppress("DEPRECATION")
             result = bundle.getSerializable("result") as File
             getFile = result
-            val resultImage =
+            resultImage =
                 rotateBitmap(BitmapFactory.decodeFile(getFile?.path ?: ""), isBackCamera)
             binding?.ivPhoto?.load(resultImage)
         }
@@ -108,18 +111,18 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
             binding?.tiLayout?.error = getString(R.string.caption_cannot_be_empty)
         } else {
             binding?.tiLayout?.error = null
-            val file = reduceFileImage(getFile as File)
+            val file =
+                reduceFileImage(context?.let { convertBitmapToFile(resultImage, it) } as File)
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val description =
                 (binding?.etCaption?.text.toString()).toRequestBody("text/plain".toMediaType())
-            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                "photo",
-                file.name,
-                requestImageFile
-            )
+            val imageMultipart: MultipartBody.Part =
+                MultipartBody.Part.createFormData("photo", file.name, requestImageFile)
+
             viewModel.addStoryRequest(imageMultipart, description, token)
         }
     }
+
 
     private val launcherForResultFromGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
