@@ -1,4 +1,4 @@
-package me.fakhry.dicodingstory.ui.map.utils
+package me.fakhry.dicodingstory.utils
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

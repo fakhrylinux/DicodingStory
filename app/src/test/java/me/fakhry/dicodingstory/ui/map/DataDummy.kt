@@ -1,4 +1,4 @@
-package me.fakhry.dicodingstory.ui
+package me.fakhry.dicodingstory.ui.map
 
 import me.fakhry.dicodingstory.network.model.StoryWithLoc
 

@@ -99,10 +99,9 @@ class StoryFragment : Fragment(), View.OnClickListener {
     private fun isLoggedIn() {
         userSharedViewModel.getToken().observe(viewLifecycleOwner) { token ->
             if (token.isNotEmpty()) {
-                userSharedViewModel.getAllStories()
-                    .observe(viewLifecycleOwner) { stories ->
-                        storyListAdapter.submitData(lifecycle, stories)
-                    }
+                userSharedViewModel.getAllStories().observe(viewLifecycleOwner) { stories ->
+                    storyListAdapter.submitData(lifecycle, stories)
+                }
             } else {
                 findNavController().navigate(R.id.loginFragment)
             }

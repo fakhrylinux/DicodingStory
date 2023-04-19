@@ -18,7 +18,8 @@ class StoryAdapter : PagingDataAdapter<StoryItem, StoryAdapter.ViewHolder>(DIFF_
         this.onItemClickCallback = onItemClickCallback
     }
 
-    class ViewHolder(private var binding: StoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private var binding: StoryItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(data: StoryItem) {
             binding.tvName.text = data.name
             binding.ivPost.load(data.photoUrl)
@@ -46,7 +47,7 @@ class StoryAdapter : PagingDataAdapter<StoryItem, StoryAdapter.ViewHolder>(DIFF_
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryItem>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryItem>() {
             override fun areItemsTheSame(
                 oldItem: StoryItem,
                 newItem: StoryItem

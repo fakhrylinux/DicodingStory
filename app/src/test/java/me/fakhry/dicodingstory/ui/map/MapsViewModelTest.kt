@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import me.fakhry.dicodingstory.network.model.StoryWithLoc
 import me.fakhry.dicodingstory.repository.MapsRepository
 import me.fakhry.dicodingstory.repository.Result
-import me.fakhry.dicodingstory.ui.DataDummy
-import me.fakhry.dicodingstory.ui.map.utils.getOrAwaitValue
+import me.fakhry.dicodingstory.utils.getOrAwaitValue
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
