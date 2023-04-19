@@ -27,9 +27,6 @@ class UserSharedViewModel(
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
 
-    private val _respondMessage = MutableLiveData<String>()
-    val respondMessage: LiveData<String> = _respondMessage
-
     private val _responseMessage = MutableLiveData<String>()
     val responseMessage: LiveData<String> = _responseMessage
 

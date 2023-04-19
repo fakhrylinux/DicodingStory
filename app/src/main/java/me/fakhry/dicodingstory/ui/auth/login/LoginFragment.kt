@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -22,7 +23,6 @@ import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentLoginBinding
 import me.fakhry.dicodingstory.ui.UserSharedViewModel
 import me.fakhry.dicodingstory.ui.story.StoryViewModelFactory
-import me.fakhry.dicodingstory.util.showLoading
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
@@ -141,7 +141,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     }
 
     private fun updateView(isLoading: Boolean) {
-        binding?.progressBar?.showLoading(isLoading)
+        binding?.progressBar?.isVisible = isLoading
         binding?.btnLogin?.isEnabled = !isLoading
         binding?.tvSignup?.isEnabled = !isLoading
     }

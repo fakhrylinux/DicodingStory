@@ -17,17 +17,20 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentStoryBinding
 import me.fakhry.dicodingstory.network.model.StoryItem
 import me.fakhry.dicodingstory.ui.UserSharedViewModel
-import me.fakhry.dicodingstory.util.showLoading
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
@@ -87,7 +90,12 @@ class StoryFragment : Fragment(), View.OnClickListener {
                 storyListAdapter.retry()
             }
         )
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            storyListAdapter.loadStateFlow.collectLatest { loadState ->
+                binding?.progressBar?.isVisible = loadState.refresh is LoadState.Loading
+                binding?.tvErrorMessage?.isVisible = loadState.refresh is LoadState.Error
+            }
+        }
         storyListAdapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
             override fun onItemClicked(item: StoryItem) {
                 val direction = StoryFragmentDirections.actionStoryFragmentToDetailFragment(item)
@@ -134,13 +142,10 @@ class StoryFragment : Fragment(), View.OnClickListener {
 
     private fun observeViewModel() {
         userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding?.progressBar?.showLoading(isLoading)
+            binding?.progressBar?.isVisible = isLoading
         }
         userSharedViewModel.isError.observe(viewLifecycleOwner) { isError ->
             binding?.tvErrorMessage?.isVisible = isError
-        }
-        userSharedViewModel.respondMessage.observe(viewLifecycleOwner) { message ->
-            binding?.tvErrorMessage?.text = message
         }
     }
 

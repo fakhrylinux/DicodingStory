@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -23,7 +24,6 @@ import me.fakhry.dicodingstory.databinding.FragmentCreateStoryBinding
 import me.fakhry.dicodingstory.util.convertBitmapToFile
 import me.fakhry.dicodingstory.util.reduceFileImage
 import me.fakhry.dicodingstory.util.rotateBitmap
-import me.fakhry.dicodingstory.util.showLoading
 import me.fakhry.dicodingstory.util.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -86,7 +86,7 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
         }
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             enableDisableButton(!isLoading)
-            binding?.progressBar?.showLoading(isLoading)
+            binding?.progressBar?.isVisible = isLoading
         }
         viewModel.responseMessage.observe(viewLifecycleOwner) { responseMessage ->
             activity?.let { activity ->

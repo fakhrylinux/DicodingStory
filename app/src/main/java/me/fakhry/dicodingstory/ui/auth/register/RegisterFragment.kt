@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.databinding.FragmentRegisterBinding
-import me.fakhry.dicodingstory.util.showLoading
 
 class RegisterFragment : Fragment(), View.OnClickListener {
 
@@ -79,7 +79,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private fun observeViewModel() {
         registerViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             enableDisableButton(!isLoading)
-            binding?.progressBar?.showLoading(isLoading)
+            binding?.progressBar?.isVisible = isLoading
         }
         registerViewModel.isError.observe(viewLifecycleOwner) { isError ->
             if (!isError) {

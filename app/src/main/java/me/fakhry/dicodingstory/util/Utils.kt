@@ -8,8 +8,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
-import android.view.View
-import android.widget.ProgressBar
 import me.fakhry.dicodingstory.R
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -25,14 +23,6 @@ val timeStamp: String = SimpleDateFormat(
     FILENAME_FORMAT,
     Locale.US
 ).format(System.currentTimeMillis())
-
-fun ProgressBar.showLoading(isLoading: Boolean) {
-    visibility = if (isLoading) {
-        View.VISIBLE
-    } else {
-        View.GONE
-    }
-}
 
 fun createCustomTempFile(context: Context): File {
     val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
