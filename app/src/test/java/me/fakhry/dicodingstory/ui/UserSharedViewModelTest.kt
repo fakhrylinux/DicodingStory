@@ -62,7 +62,7 @@ class UserSharedViewModelTest {
 
         Assert.assertNotNull(differ.snapshot())
         Assert.assertEquals(dummyStory.size, differ.snapshot().size)
-        Assert.assertEquals(dummyStory[0].id, differ.snapshot()[0]?.id)
+        Assert.assertEquals(dummyStory[0], differ.snapshot()[0])
     }
 
     @Test
