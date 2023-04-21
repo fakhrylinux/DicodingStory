@@ -18,7 +18,7 @@ class StoryAdapter : PagingDataAdapter<StoryItem, StoryAdapter.ViewHolder>(DIFF_
         this.onItemClickCallback = onItemClickCallback
     }
 
-    class ViewHolder(private var binding: StoryItemBinding) :
+    class ViewHolder(private val binding: StoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: StoryItem) {
             binding.tvName.text = data.name

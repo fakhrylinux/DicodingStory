@@ -44,7 +44,8 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
     private var resultImage: Bitmap? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCreateStoryBinding.inflate(inflater, container, false)
@@ -60,9 +61,8 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
         setFragmentResultListener("200") { _, bundle ->
             @Suppress("DEPRECATION")
             result = bundle.getSerializable("result") as File
-            getFile = result
-            resultImage =
-                rotateBitmap(BitmapFactory.decodeFile(getFile?.path ?: ""), isBackCamera)
+            resultImage = rotateBitmap(BitmapFactory.decodeFile(result?.path ?: ""), isBackCamera)
+            getFile = reduceFileImage(context?.let { convertBitmapToFile(resultImage, it) } as File)
             binding?.ivPhoto?.load(resultImage)
         }
         binding?.btnTakePhoto?.setOnClickListener(this)
@@ -82,7 +82,8 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
 
     private fun observeViewModel() {
         viewModel.isSuccess.observe(viewLifecycleOwner) { isSuccess ->
-            if (isSuccess) findNavController().navigate(R.id.storyFragment)
+            val direction = CreateStoryFragmentDirections.actionCreateStoryFragmentToStoryFragment()
+            if (isSuccess) findNavController().navigate(direction)
         }
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             enableDisableButton(!isLoading)
@@ -111,15 +112,15 @@ class CreateStoryFragment : Fragment(), View.OnClickListener {
             binding?.tiLayout?.error = getString(R.string.caption_cannot_be_empty)
         } else {
             binding?.tiLayout?.error = null
-            val file =
-                reduceFileImage(context?.let { convertBitmapToFile(resultImage, it) } as File)
-            val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-            val description =
-                (binding?.etCaption?.text.toString()).toRequestBody("text/plain".toMediaType())
-            val imageMultipart: MultipartBody.Part =
-                MultipartBody.Part.createFormData("photo", file.name, requestImageFile)
-
-            viewModel.addStoryRequest(imageMultipart, description, token)
+            val file = getFile
+            if (file != null) {
+                val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                val description =
+                    (binding?.etCaption?.text.toString()).toRequestBody("text/plain".toMediaType())
+                val imageMultipart: MultipartBody.Part =
+                    MultipartBody.Part.createFormData("photo", file.name, requestImageFile)
+                viewModel.addStoryRequest(imageMultipart, description, token)
+            }
         }
     }
 
