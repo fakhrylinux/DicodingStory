@@ -15,14 +15,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentLoginBinding
-import me.fakhry.dicodingstory.ui.UserSharedViewModel
-import me.fakhry.dicodingstory.ui.story.StoryViewModelFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
@@ -31,8 +29,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding
     private lateinit var pref: UserPreferences
-    private val userSharedViewModel: UserSharedViewModel by activityViewModels {
-        StoryViewModelFactory(pref, requireContext())
+    private val userSharedViewModel: LoginViewModel by viewModels {
+        LoginViewModelFactory(pref)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

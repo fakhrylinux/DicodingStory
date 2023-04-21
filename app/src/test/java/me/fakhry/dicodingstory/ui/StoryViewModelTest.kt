@@ -16,6 +16,7 @@ import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.network.model.StoryItem
 import me.fakhry.dicodingstory.repository.StoryRepository
 import me.fakhry.dicodingstory.ui.story.StoryAdapter
+import me.fakhry.dicodingstory.ui.story.StoryViewModel
 import me.fakhry.dicodingstory.utils.getOrAwaitValue
 import org.junit.Assert
 import org.junit.Rule
@@ -27,7 +28,7 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-class UserSharedViewModelTest {
+class StoryViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -49,9 +50,9 @@ class UserSharedViewModelTest {
         expectedStory.value = data
         Mockito.`when`(storyRepository.getStory()).thenReturn(expectedStory)
 
-        val userSharedViewModel = UserSharedViewModel(pref, storyRepository)
+        val storyViewModel = StoryViewModel(pref, storyRepository)
         val actualStory: PagingData<StoryItem> =
-            userSharedViewModel.getAllStories().getOrAwaitValue()
+            storyViewModel.getAllStories().getOrAwaitValue()
 
         val differ = AsyncPagingDataDiffer(
             diffCallback = StoryAdapter.DIFF_CALLBACK,
@@ -72,9 +73,9 @@ class UserSharedViewModelTest {
         expectedStory.value = data
         Mockito.`when`(storyRepository.getStory()).thenReturn(expectedStory)
 
-        val userSharedViewModel = UserSharedViewModel(pref, storyRepository)
+        val storyViewModel = StoryViewModel(pref, storyRepository)
         val actualStory: PagingData<StoryItem> =
-            userSharedViewModel.getAllStories().getOrAwaitValue()
+            storyViewModel.getAllStories().getOrAwaitValue()
 
         val differ = AsyncPagingDataDiffer(
             diffCallback = StoryAdapter.DIFF_CALLBACK,

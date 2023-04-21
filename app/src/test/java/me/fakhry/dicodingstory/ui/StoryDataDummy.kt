@@ -1,7 +1,6 @@
 package me.fakhry.dicodingstory.ui
 
 import me.fakhry.dicodingstory.network.model.StoryItem
-import me.fakhry.dicodingstory.network.model.StoryWithLoc
 
 object StoryDataDummy {
 

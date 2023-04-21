@@ -30,7 +30,6 @@ import me.fakhry.dicodingstory.R
 import me.fakhry.dicodingstory.UserPreferences
 import me.fakhry.dicodingstory.databinding.FragmentStoryBinding
 import me.fakhry.dicodingstory.network.model.StoryItem
-import me.fakhry.dicodingstory.ui.UserSharedViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
@@ -40,7 +39,7 @@ class StoryFragment : Fragment(), View.OnClickListener {
     private val binding get() = _binding
     private val storyListAdapter = StoryAdapter()
     private lateinit var pref: UserPreferences
-    private lateinit var userSharedViewModel: UserSharedViewModel
+    private lateinit var storyViewModel: StoryViewModel
     private lateinit var token: String
 
     override fun onCreateView(
@@ -55,11 +54,10 @@ class StoryFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         pref = UserPreferences.getInstance(requireContext().dataStore)
-        userSharedViewModel =
-            ViewModelProvider(
-                this,
-                StoryViewModelFactory(pref, requireContext())
-            )[UserSharedViewModel::class.java]
+        storyViewModel = ViewModelProvider(
+            this,
+            StoryViewModelFactory(pref, requireContext())
+        )[StoryViewModel::class.java]
         token = runBlocking { pref.getToken().first() }
 
         isLoggedIn()
@@ -105,9 +103,9 @@ class StoryFragment : Fragment(), View.OnClickListener {
     }
 
     private fun isLoggedIn() {
-        userSharedViewModel.getToken().observe(viewLifecycleOwner) { token ->
+        storyViewModel.getToken().observe(viewLifecycleOwner) { token ->
             if (token.isNotEmpty()) {
-                userSharedViewModel.getAllStories().observe(viewLifecycleOwner) { stories ->
+                storyViewModel.getAllStories().observe(viewLifecycleOwner) { stories ->
                     storyListAdapter.submitData(lifecycle, stories)
                 }
             } else {
@@ -125,7 +123,7 @@ class StoryFragment : Fragment(), View.OnClickListener {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.logout -> {
-                        userSharedViewModel.logout()
+                        storyViewModel.logout()
                         findNavController().navigate(R.id.loginFragment)
                     }
 
@@ -141,10 +139,10 @@ class StoryFragment : Fragment(), View.OnClickListener {
     }
 
     private fun observeViewModel() {
-        userSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        storyViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding?.progressBar?.isVisible = isLoading
         }
-        userSharedViewModel.isError.observe(viewLifecycleOwner) { isError ->
+        storyViewModel.isError.observe(viewLifecycleOwner) { isError ->
             binding?.tvErrorMessage?.isVisible = isError
         }
     }
